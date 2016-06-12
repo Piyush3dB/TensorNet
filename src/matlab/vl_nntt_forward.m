@@ -18,8 +18,14 @@ function out = vl_nntt_forward(layer, in, out)
 layer.W.core = layer.weights{1};
 [inHeight, inWidth, inChannels, batchSize] = size(in.x);
 
+% (8 32 3 4) -> (768 4)
+A = reshape(in.x, [], batchSize);
 
-out.x = full(layer.W * reshape(in.x, [], batchSize));
+%m = layer.W * A;
+
+m = my_tt_mul(layer.W, A);
+out.x = full(m);
+
 if numel(layer.weights{2}) > 0
     out.x = bsxfun(@plus, out.x, layer.weights{2}(:));
 end

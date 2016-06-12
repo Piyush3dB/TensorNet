@@ -50,25 +50,49 @@ for l = tests
   switch l
     case 1
       disp('Testing vl_nntt_* with the identity TT-matrix.');
+      
+      % Dimensions
+      h = 8;
+      w = 32;
+      c = 3;
+      b = 4;
+      % h*w*c = 8*32*3 = 786
+      
+      layer.outHeight   = h;
+      layer.outWidth    = w;
+      layer.outChannels = c;
 
-      in.x = grandn(8, 32, 3, 4, 'single');
-      W = tt_ones([4, 4, 4, 4, 3]);
+      % Create randn input of dim (height, width, channels, batch)
+      in.x = grandn(h, w, c, b, 'single');
+      
+      % Call TT-Toolbox to init Weights
+      W = tt_ones([4, 4, 4, 4, c]); % (height, width, channels) -> (4,4,4,4,channels)
+      
+      % Ranks and mode sizes in W.tt
+      % Row and Col sizes in W
       W.core = single(W.core);
       W = diag(W);
       layer.W = W;
+      
+      % Layer Weights
       layer.weights{1} = W.core;
       if gpu
         layer.weights{1} = gpuArray(layer.weights{1});
       end
-      layer.outHeight = 8;
-      layer.outWidth = 32;
-      layer.outChannels = 3;
-      layer.weights{2} = grandn(8 * 32 * 3, 1, 'single');
+
+      % Layer Biases
+      layer.weights{2} = grandn(h*w*c, 1, 'single');
       out = [];
+      
+      % Forward Pass
       out = vl_nntt_forward(layer, in, out);
       y = out.x;
+      
+      % Backward pass
       out.dzdx = grandn(size(y), 'single');
       in = vl_nntt_backward(layer, in, out);
+      
+      
       for iGroup = 1:numel(layer.weights)
           vl_testder(@(w) vl_nntt_forward_weights(layer, in, out, iGroup, w), layer.weights{iGroup}, out.dzdx, in.dzdw{iGroup}, range * 1e-2);
       end
