@@ -21,9 +21,15 @@ layer.W.core = layer.weights{1};
 % (8 32 3 4) -> (768 4)
 A = reshape(in.x, [], batchSize);
 
-%m = layer.W * A;
+mR = layer.W * A;
 
 m = my_tt_mul(layer.W, A);
+s = sum(sum(mR-m));
+
+if (s)
+    error('Ref and model not same');
+end
+
 out.x = full(m);
 
 if numel(layer.weights{2}) > 0
