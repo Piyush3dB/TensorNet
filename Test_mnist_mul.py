@@ -1,6 +1,7 @@
 import scipy.io
 import sys
 import pdb as pdb
+bp = pdb.set_trace
 import numpy as np
 
 
@@ -24,7 +25,9 @@ def my_tt_mul_F(W, A):
     ns = np.vstack((m, rb))        # new shape for input data
     #pdb.set_trace()
     c  = np.reshape(A, ns, order='F')   # reshape input data to new shape
-    # c is [4 x 8 x 8 x 4 x 100]
+    # c is [4 x 8 x 8 x 4 x batchSize]
+
+    pdb.set_trace()
 
 
     # For every core in te TT
@@ -52,13 +55,13 @@ def my_tt_mul_F(W, A):
         M = np.size(c)
         c = np.reshape(c, (r[k]*m[k], M/(r[k]*m[k])), order='F')
         
-        print ('  Data. Size = %7d. Shape = %s ') % ( M, str(np.shape(c)))
+        print ('  Data. Size = %7d.                 Shape = %s ') % ( M, str(np.shape(c)))
 
         c1 = np.einsum('ij,jk->ik', core, c)
         c2 = np.reshape(c1, (n[k], np.size(c1)/n[k]), order='F')
         c = c2.transpose((1,0))
 
-        print ('  Result.  Size = %7d. Shape = %s. Shape = %s. Shape = %s ') % (np.size(c1), str(np.shape(c1)), str(np.shape(c2)), str(np.shape(c)))
+        print ('\n  Result.  Size = %7d. Shape = %s. Shape = %s. Shape = %s ') % (np.size(c1), str(np.shape(c1)), str(np.shape(c2)), str(np.shape(c)))
 
         print ' '
 
@@ -69,7 +72,7 @@ def my_tt_mul_F(W, A):
 
     print ('C Shape = %s') % (str(np.shape(c)))
 
-    #pdb.set_trace()
+    pdb.set_trace()
 
     return c
 
@@ -80,39 +83,36 @@ def vl_nntt_forward(layer, iin, out):
     """
     """
 
+    # Parameters
     inHeight   = np.shape(iin['x'][0,0])[0]
     inWidth    = np.shape(iin['x'][0,0])[1]
     inChannels = np.shape(iin['x'][0,0])[2] if np.size(np.shape(iin['x'][0,0]))==4 else 1
     batchSize  = np.shape(iin['x'][0,0])[3] if np.size(np.shape(iin['x'][0,0]))==4 else 1
 
-
-
-
     # Weights
     W = layer['W'] # Weights
 
-    pdb.set_trace()
+    B = np.shape(layer['weights'][0,0][0,1])
+
+
     # Data
     A = np.reshape(iin['x'][0,0], (inHeight*inWidth, batchSize), order='F')
-    
 
     # Call function
     m2 = my_tt_mul_F(W, A)
 
+    pdb.set_trace()
+
     return m2
-
-
-    #return out
-
-
-    
 
 
 
 def main():
+    """
+    """
 
-    #mat = scipy.io.loadmat('./experiments/mnist/mnist_1_batch_fwd.mat')
-    mat = scipy.io.loadmat('./experiments/mnist/mnist_100_batch_fwd.mat')
+    mat = scipy.io.loadmat('./experiments/mnist/mnist_1_batch_fwd.mat')
+    #mat = scipy.io.loadmat('./experiments/mnist/mnist_100_batch_fwd.mat')
 
     layer = mat['layer']
     iin   = mat['in']
