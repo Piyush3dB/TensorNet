@@ -95,11 +95,14 @@ def my_tt_mul_C(W, A):
 
 
     # Data
-    rb = np.shape(A)[1]      # number of batches
+    rb = np.shape(A)[0]      # number of batches
     ns = np.vstack((m, rb))        # new shape for input data
-    #pdb.set_trace()
-    c  = np.reshape(A, ns, order='F')   # reshape input data to new shape
-    # c is [4 x 8 x 8 x 4 x batchSize]
+    
+    ns = np.flipud(ns)
+
+    c  = np.reshape(A, ns, order='C')
+
+    c = c.transpose()
 
     #pdb.set_trace()
 
@@ -114,14 +117,12 @@ def my_tt_mul_C(W, A):
         cs = np.hstack((r[k+1], m[k], n[k], r[k]))
 
         # Reshape core
-        core = core.transpose()
-        
-        core = np.reshape(core, cs, order='C').transpose()
+        core = np.reshape(core, cs, order='C')
         
         #pdb.set_trace()
 
         # Swap axes
-        core = core.transpose((2,0,3,1))
+        core = core.transpose((1,3,0,2))
         
 
         # Reshape to matrix -> 'weight'
@@ -131,6 +132,8 @@ def my_tt_mul_C(W, A):
 
         M  = np.size(c)
         sc = np.shape(c)
+
+
         c = c.transpose()
         c = np.reshape(c, (M/(r[k]*m[k]), r[k]*m[k]), order='C')
         
@@ -149,9 +152,13 @@ def my_tt_mul_C(W, A):
         print ' '
 
     print 'Final reshape'
-    c = np.reshape(c, (np.size(c), 1), order='F')
-    c = np.reshape(c, (rb, np.size(c)/rb), order='F')
-    c = c.transpose((1,0))
+
+
+    c = np.reshape(c, (1, np.size(c)), order='C')
+
+    c = np.reshape(c, (rb, np.size(c)/rb), order='C')
+    
+    
 
     print ('C Shape = %s') % (str(np.shape(c)))
 
@@ -181,14 +188,12 @@ def vl_nntt_forward_C(layer, iin, out):
 
     # Data
     A  = np.reshape(iin['x'][0,0], (inHeight*inWidth, batchSize), order='F')
+    A = A.transpose()
 
     # Call function
-
-    #A = A.transpose()
-#    pdb.set_trace()
     m2 = my_tt_mul_C(W, A)
 
-    #m2 = m2.transpose()
+    m2 = m2.transpose()
 
     #pdb.set_trace()
 
