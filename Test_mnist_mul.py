@@ -102,11 +102,6 @@ def my_tt_mul_C(W, A):
 
     c  = np.reshape(A, ns, order='C')
 
-    c = c.transpose()
-
-    #pdb.set_trace()
-
-
     # For every core in te TT
     for k in range(nCores):
 
@@ -134,16 +129,15 @@ def my_tt_mul_C(W, A):
         sc = np.shape(c)
 
 
-        c = c.transpose()
+        
         c = np.reshape(c, (M/(r[k]*m[k]), r[k]*m[k]), order='C')
         
         print ('  Data. Size = %7d.  Shape = %s     Shape = %s ') % ( M, str(sc), str(np.shape(c)))
 
-        #core = core.transpose()
 
         c1 = np.einsum('ij,jk->ik', c, core)
 
-        c2 = np.reshape(c1, (np.size(c1)/n[k], n[k]), order='C')
+        c2 = np.reshape(c1, (np.size(c1)/n[k], n[k]), order='C').transpose()
         
         c = c2
 
@@ -187,15 +181,17 @@ def vl_nntt_forward_C(layer, iin, out):
 
 
     # Data
-    A  = np.reshape(iin['x'][0,0], (inHeight*inWidth, batchSize), order='F')
-    A = A.transpose()
+    #pdb.set_trace()
+    At = iin['x'][0,0].transpose()
+    A  = np.reshape(At, (batchSize, inHeight*inWidth), order='C')
 
     # Call function
     m2 = my_tt_mul_C(W, A)
+    #pdb.set_trace()
 
+    # Transpose for result
     m2 = m2.transpose()
 
-    #pdb.set_trace()
 
     return m2
 
