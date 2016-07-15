@@ -114,12 +114,9 @@ def my_tt_mul_C(W, A):
         # Reshape core
         core = np.reshape(core, cs, order='C')
         
-        #pdb.set_trace()
-
         # Swap axes
         core = core.transpose((1,3,0,2))
         
-
         # Reshape to matrix -> 'weight'
         core = np.reshape(core, (r[k]*m[k], n[k]*r[k+1]), order='C')
 
@@ -128,8 +125,6 @@ def my_tt_mul_C(W, A):
         M  = np.size(c)
         sc = np.shape(c)
 
-
-        
         c = np.reshape(c, (M/(r[k]*m[k]), r[k]*m[k]), order='C')
         
         print ('  Data. Size = %7d.  Shape = %s     Shape = %s ') % ( M, str(sc), str(np.shape(c)))
@@ -137,11 +132,9 @@ def my_tt_mul_C(W, A):
 
         c1 = np.einsum('ij,jk->ik', c, core)
 
-        c2 = np.reshape(c1, (np.size(c1)/n[k], n[k]), order='C').transpose()
-        
-        c = c2
+        c = np.reshape(c1, (np.size(c1)/n[k], n[k]), order='C').transpose()
 
-        print ('\n  Result.  Size = %7d. Shape = %s. Shape = %s. Shape = %s ') % (np.size(c1), str(np.shape(c1)), str(np.shape(c2)), str(np.shape(c)))
+        print ('\n  Result.  Size = %7d. Shape = %s. Shape = %s. Shape = %s ') % (np.size(c1), str(np.shape(c1)), str(np.shape(c)), str(np.shape(c)))
 
         print ' '
 
