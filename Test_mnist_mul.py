@@ -6,6 +6,11 @@ import numpy as np
 import os
 from numpy.testing import assert_allclose
 sys.path.append("../mxnet/python")
+sys.path.append('../mxnet-utils')
+
+from mxnetUtils import printStats, _str2tuple, net2dot
+
+
 import mxnet as mx
 #from check_utils import (check_numeric_gradient, check_symbolic_backward, check_symbolic_forward, reldiff, _np_reduce)
 
@@ -254,12 +259,17 @@ def my_tt_mul_MX(W, A):
     exector.forward(True)
     ot = exector.outputs[0].asnumpy()
 
-    pdb.set_trace()
+    #pdb.set_trace()
 
 
     
     inp_shapes = {'coreAry':np.shape(coreAry), 'A':np.shape(A)}
     #inp_shapes = {'A':(1,1024)}
+
+    name = "mul.py"
+    printStats(sym, shape=inp_shapes)
+    v = net2dot(sym, shape=inp_shapes)
+    v.render(name)
     
     arg_shapes, out_shapes, aux_shapes = sym.infer_shape(**inp_shapes)
     print arg_shapes
@@ -376,8 +386,8 @@ def main():
     """
     """
 
-    #mat = scipy.io.loadmat('./experiments/mnist/mnist_1_batch_fwd.mat')
-    mat = scipy.io.loadmat('./experiments/mnist/mnist_100_batch_fwd.mat')
+    mat = scipy.io.loadmat('./experiments/mnist/mnist_1_batch_fwd.mat')
+    #mat = scipy.io.loadmat('./experiments/mnist/mnist_100_batch_fwd.mat')
 
     layer = mat['layer']
     iin   = mat['in']
