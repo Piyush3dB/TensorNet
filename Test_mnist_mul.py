@@ -190,7 +190,6 @@ def my_tt_mul_MX(W, A):
         coreAry = mx.sym.Variable('coreAry')
         As = mx.sym.Variable('A')
 
-        #pdb.set_trace()
 
         rb = np.shape(A)[0]
         ns = np.vstack((Im, rb))
@@ -199,6 +198,8 @@ def my_tt_mul_MX(W, A):
         c = mx.sym.Reshape(As, shape=ns)
 
 
+        #pdb.set_trace()
+        
         pCrA = 0
         
         # For every core in te TT
@@ -244,21 +245,31 @@ def my_tt_mul_MX(W, A):
 
     sym = genSym(W, A, Om, Im, nCores)
 
-    #pdb.set_trace()
+    coreAryND = mx.nd.array(coreAry)
+    AND = mx.nd.array(A)
+    
+
+    # Bind and forward
+    exector = sym.bind(mx.cpu(), args={ 'coreAry' : coreAryND, 'A' : AND})
+    exector.forward(True)
+    ot = exector.outputs[0].asnumpy()
+
+    pdb.set_trace()
+
 
     
-    inp_shapes = {'coreAry':(400,1), 'A':(1,1024)}
+    inp_shapes = {'coreAry':np.shape(coreAry), 'A':np.shape(A)}
     #inp_shapes = {'A':(1,1024)}
     
     arg_shapes, out_shapes, aux_shapes = sym.infer_shape(**inp_shapes)
     print arg_shapes
     print out_shapes
 
-    pdb.set_trace()
+    #pdb.set_trace()
 
 
 
-    return c
+    return ot
 
 
 
@@ -365,8 +376,8 @@ def main():
     """
     """
 
-    mat = scipy.io.loadmat('./experiments/mnist/mnist_1_batch_fwd.mat')
-    #mat = scipy.io.loadmat('./experiments/mnist/mnist_100_batch_fwd.mat')
+    #mat = scipy.io.loadmat('./experiments/mnist/mnist_1_batch_fwd.mat')
+    mat = scipy.io.loadmat('./experiments/mnist/mnist_100_batch_fwd.mat')
 
     layer = mat['layer']
     iin   = mat['in']
