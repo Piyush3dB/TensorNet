@@ -174,7 +174,7 @@ def my_tt_mul_C(W, A):
 
  
 
-def my_tt_mul_MX(W, A):
+def my_tt_mul_MX(W, data):
 
 
 
@@ -190,23 +190,16 @@ def my_tt_mul_MX(W, A):
 
     #pdb.set_trace()
 
-    def genSym(W, A, Om, Im, nCores):
+    def genSym(rb, Om, Im, nCores, r):
+        coreAry = mx.sym.Variable('weights')
+        As = mx.sym.Variable('data')
 
-        coreAry = mx.sym.Variable('coreAry')
-        As = mx.sym.Variable('A')
-
-
-        rb = np.shape(A)[0]
         ns = np.vstack((Im, rb))
         ns = tuple(np.flipud(ns)[:,0])
         
         c = mx.sym.Reshape(As, shape=ns)
-
-
-        #pdb.set_trace()
-        
+       
         pCrA = 0
-        
         # For every core in te TT
         for k in range(nCores):
             # Create core shape
@@ -219,43 +212,32 @@ def my_tt_mul_MX(W, A):
 
             # Reshape core
             core = mx.sym.Reshape(core, shape=tuple(cs))
-            
             core = mx.sym.transpose(core, axes=(1,3,0,2))
 
             cs = tuple(np.hstack([r[k]*Im[k], Om[k]*r[k+1]]))
             core = mx.sym.Reshape(core, shape=cs)
-
-            
-            #cs = tuple(np.hstack(M/(r[k]*Im[k]), r[k]*Im[k]))
+           
             cs = tuple(np.hstack([-1, r[k]*Im[k]]))
             c = mx.sym.Reshape(c, shape=cs)
-
             c1 = mx.sym.dot(c, core)
-
             cs = tuple(np.hstack([ -1 , Om[k] ]))
             c = mx.sym.Reshape(c1, shape=cs)
             c = mx.sym.transpose(c, axes=(1,0))
 
-
-
         c = mx.sym.Reshape(c, shape=(1,-1))
         c = mx.sym.Reshape(c, shape=(rb, -1))
 
-
         return c
 
-        #c = mx.sym.dot(a, b)
-        #coreAry = 
-
-
-    sym = genSym(W, A, Om, Im, nCores)
+    rb = np.shape(data)[0]
+    sym = genSym(rb, Om, Im, nCores, r)
 
     coreAryND = mx.nd.array(coreAry)
-    AND = mx.nd.array(A)
+    dataND = mx.nd.array(data)
     
 
     # Bind and forward
-    exector = sym.bind(mx.cpu(), args={ 'coreAry' : coreAryND, 'A' : AND})
+    exector = sym.bind(mx.cpu(), args={ 'weights' : coreAryND, 'data' : dataND})
     exector.forward(True)
     ot = exector.outputs[0].asnumpy()
 
@@ -263,7 +245,7 @@ def my_tt_mul_MX(W, A):
 
 
     
-    inp_shapes = {'coreAry':np.shape(coreAry), 'A':np.shape(A)}
+    inp_shapes = {'weights':np.shape(coreAry), 'data':np.shape(data)}
     #inp_shapes = {'A':(1,1024)}
 
     name = "mul.py"
@@ -387,7 +369,7 @@ def main():
     """
 
     mat = scipy.io.loadmat('./experiments/mnist/mnist_1_batch_fwd.mat')
-    #mat = scipy.io.loadmat('./experiments/mnist/mnist_100_batch_fwd.mat')
+    mat = scipy.io.loadmat('./experiments/mnist/mnist_100_batch_fwd.mat')
 
     layer = mat['layer']
     iin   = mat['in']
