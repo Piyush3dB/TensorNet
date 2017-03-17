@@ -6,7 +6,8 @@ import numpy as np
 import os
 from numpy.testing import assert_allclose
 sys.path.append("../mxnet/python")
-sys.path.append('../mxnet-utils')
+#sys.path.append('../mxnet-utils')
+sys.path.append('/v/home/epiyusi/private/Downloads/github/mxnetUtils')
 
 from mxnetUtils import printStats, _str2tuple, net2dot
 
@@ -250,8 +251,8 @@ def my_tt_mul_MX(W, data):
 
     name = "mul.py"
     printStats(sym, shape=inp_shapes)
-    v = net2dot(sym, shape=inp_shapes)
-    v.render(name)
+    #v = net2dot(sym, shape=inp_shapes)
+    #v.render(name)
     
     arg_shapes, out_shapes, aux_shapes = sym.infer_shape(**inp_shapes)
     print arg_shapes
@@ -386,7 +387,7 @@ def main():
     
     print ('Result:: Matlab=%f  Py=%f  Difference = %f') % (float(np.sum(m)), float(np.sum(m2)), float(np.sum(m-m2)))
 
-    #pdb.set_trace()
+    pdb.set_trace()
 
 
 

@@ -1,0 +1,86 @@
+
+__________________________________________________________________________________________________________________________________________
+|   |        OPERATOR|                     TENSOR|                                    WEIGHTS|                             ACTIVATION MAP|
+|---|----------------|---------------------------|-------------------------------------------|-------------------------------------------|
+|  0|                |                       data|                                           |           (1, 1024)=           1024[3.60%]|
+|  1|         Reshape|            reshape0_output|                                           |     (1, 4, 8, 8, 4)=           1024[3.60%]|
+|  2|         Reshape|            reshape3_output|                                           |            (256, 4)=           1024[3.60%]|
+|  3|                |                    weights|          (400, 1)=            400[100.00%]|                                           |
+|  4|      slice_axis|         slice_axis0_output|                                           |             (40, 1)=             40[0.14%]|
+|  5|         Reshape|            reshape1_output|                                           |        (2, 4, 5, 1)=             40[0.14%]|
+|  6|       transpose|          transpose0_output|                                           |        (4, 1, 2, 5)=             40[0.14%]|
+|  7|         Reshape|            reshape2_output|                                           |             (4, 10)=             40[0.14%]|
+|  8|             dot|                dot0_output|                                           |           (256, 10)=           2560[9.00%]|
+|  9|         Reshape|            reshape4_output|                                           |            (512, 5)=           2560[9.00%]|
+| 10|       transpose|          transpose1_output|                                           |            (5, 512)=           2560[9.00%]|
+| 11|         Reshape|            reshape7_output|                                           |           (160, 16)=           2560[9.00%]|
+| 12|      slice_axis|         slice_axis1_output|                                           |            (160, 1)=            160[0.56%]|
+| 13|         Reshape|            reshape5_output|                                           |        (2, 8, 5, 2)=            160[0.56%]|
+| 14|       transpose|          transpose2_output|                                           |        (8, 2, 2, 5)=            160[0.56%]|
+| 15|         Reshape|            reshape6_output|                                           |            (16, 10)=            160[0.56%]|
+| 16|             dot|                dot1_output|                                           |           (160, 10)=           1600[5.63%]|
+| 17|         Reshape|            reshape8_output|                                           |            (320, 5)=           1600[5.63%]|
+| 18|       transpose|          transpose3_output|                                           |            (5, 320)=           1600[5.63%]|
+| 19|         Reshape|           reshape11_output|                                           |           (100, 16)=           1600[5.63%]|
+| 20|      slice_axis|         slice_axis2_output|                                           |            (160, 1)=            160[0.56%]|
+| 21|         Reshape|            reshape9_output|                                           |        (2, 8, 5, 2)=            160[0.56%]|
+| 22|       transpose|          transpose4_output|                                           |        (8, 2, 2, 5)=            160[0.56%]|
+| 23|         Reshape|           reshape10_output|                                           |            (16, 10)=            160[0.56%]|
+| 24|             dot|                dot2_output|                                           |           (100, 10)=           1000[3.52%]|
+| 25|         Reshape|           reshape12_output|                                           |            (200, 5)=           1000[3.52%]|
+| 26|       transpose|          transpose5_output|                                           |            (5, 200)=           1000[3.52%]|
+| 27|         Reshape|           reshape15_output|                                           |            (125, 8)=           1000[3.52%]|
+| 28|      slice_axis|         slice_axis3_output|                                           |             (40, 1)=             40[0.14%]|
+| 29|         Reshape|           reshape13_output|                                           |        (1, 4, 5, 2)=             40[0.14%]|
+| 30|       transpose|          transpose6_output|                                           |        (4, 2, 1, 5)=             40[0.14%]|
+| 31|         Reshape|           reshape14_output|                                           |              (8, 5)=             40[0.14%]|
+| 32|             dot|                dot3_output|                                           |            (125, 5)=            625[2.20%]|
+| 33|         Reshape|           reshape16_output|                                           |            (125, 5)=            625[2.20%]|
+| 34|       transpose|          transpose7_output|                                           |            (5, 125)=            625[2.20%]|
+| 35|         Reshape|           reshape17_output|                                           |            (1, 625)=            625[2.20%]|
+| 36|         Reshape|           reshape18_output|                                           |            (1, 625)=            625[2.20%]|
+|___|________________|___________________________|___________________________________________|___________________________________________|
+
+
+__________________________________________________________________________________________________________________________________________
+|   |        OPERATOR|                     TENSOR|                                    WEIGHTS|                             ACTIVATION MAP|
+|---|----------------|---------------------------|-------------------------------------------|-------------------------------------------|
+|  0|                |                       data|                                           |         (100, 1024)=         102400[3.81%]|
+|  1|         Reshape|            reshape0_output|                                           |   (100, 4, 8, 8, 4)=         102400[3.81%]|
+|  2|         Reshape|            reshape3_output|                                           |          (25600, 4)=         102400[3.81%]|
+|  3|                |                    weights|          (400, 1)=            400[100.00%]|                                           |
+|  4|      slice_axis|         slice_axis0_output|                                           |             (40, 1)=             40[0.00%]|
+|  5|         Reshape|            reshape1_output|                                           |        (2, 4, 5, 1)=             40[0.00%]|
+|  6|       transpose|          transpose0_output|                                           |        (4, 1, 2, 5)=             40[0.00%]|
+|  7|         Reshape|            reshape2_output|                                           |             (4, 10)=             40[0.00%]|
+|  8|             dot|                dot0_output|                                           |         (25600, 10)=         256000[9.53%]|
+|  9|         Reshape|            reshape4_output|                                           |          (51200, 5)=         256000[9.53%]|
+| 10|       transpose|          transpose1_output|                                           |          (5, 51200)=         256000[9.53%]|
+| 11|         Reshape|            reshape7_output|                                           |         (16000, 16)=         256000[9.53%]|
+| 12|      slice_axis|         slice_axis1_output|                                           |            (160, 1)=            160[0.01%]|
+| 13|         Reshape|            reshape5_output|                                           |        (2, 8, 5, 2)=            160[0.01%]|
+| 14|       transpose|          transpose2_output|                                           |        (8, 2, 2, 5)=            160[0.01%]|
+| 15|         Reshape|            reshape6_output|                                           |            (16, 10)=            160[0.01%]|
+| 16|             dot|                dot1_output|                                           |         (16000, 10)=         160000[5.96%]|
+| 17|         Reshape|            reshape8_output|                                           |          (32000, 5)=         160000[5.96%]|
+| 18|       transpose|          transpose3_output|                                           |          (5, 32000)=         160000[5.96%]|
+| 19|         Reshape|           reshape11_output|                                           |         (10000, 16)=         160000[5.96%]|
+| 20|      slice_axis|         slice_axis2_output|                                           |            (160, 1)=            160[0.01%]|
+| 21|         Reshape|            reshape9_output|                                           |        (2, 8, 5, 2)=            160[0.01%]|
+| 22|       transpose|          transpose4_output|                                           |        (8, 2, 2, 5)=            160[0.01%]|
+| 23|         Reshape|           reshape10_output|                                           |            (16, 10)=            160[0.01%]|
+| 24|             dot|                dot2_output|                                           |         (10000, 10)=         100000[3.72%]|
+| 25|         Reshape|           reshape12_output|                                           |          (20000, 5)=         100000[3.72%]|
+| 26|       transpose|          transpose5_output|                                           |          (5, 20000)=         100000[3.72%]|
+| 27|         Reshape|           reshape15_output|                                           |          (12500, 8)=         100000[3.72%]|
+| 28|      slice_axis|         slice_axis3_output|                                           |             (40, 1)=             40[0.00%]|
+| 29|         Reshape|           reshape13_output|                                           |        (1, 4, 5, 2)=             40[0.00%]|
+| 30|       transpose|          transpose6_output|                                           |        (4, 2, 1, 5)=             40[0.00%]|
+| 31|         Reshape|           reshape14_output|                                           |              (8, 5)=             40[0.00%]|
+| 32|             dot|                dot3_output|                                           |          (12500, 5)=          62500[2.33%]|
+| 33|         Reshape|           reshape16_output|                                           |          (12500, 5)=          62500[2.33%]|
+| 34|       transpose|          transpose7_output|                                           |          (5, 12500)=          62500[2.33%]|
+| 35|         Reshape|           reshape17_output|                                           |          (1, 62500)=          62500[2.33%]|
+| 36|         Reshape|           reshape18_output|                                           |          (100, 625)=          62500[2.33%]|
+|___|________________|___________________________|___________________________________________|___________________________________________|
+
